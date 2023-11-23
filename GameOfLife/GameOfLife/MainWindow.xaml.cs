@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -9,7 +11,7 @@ namespace GameOfLife
         private Grid mainGrid;
         DispatcherTimer timer;   //  Generation timer
         private int genCounter;
-        private AdWindow[] adWindow;
+        private List<AdWindow> adWindow;
 
 
         public MainWindow()
@@ -25,34 +27,23 @@ namespace GameOfLife
 
         private void StartAd()
         {
-            
+            adWindow = new List<AdWindow>();
+            for (int i = 0; i < 2; i++)
             {
-                adWindow = new AdWindow[2];
-                for (int i = 0; i < 2; i++)
-                {
-                    if (adWindow[i] == null)
-                    {
-                        adWindow[i] = new AdWindow(this);
-                        adWindow[i].Closed += AdWindowOnClosed;
-                        adWindow[i].Top = this.Top + (330 * i) + 70;
-                        adWindow[i].Left = this.Left + 240;                        
-                        adWindow[i].Show();
-                    }
-                }
-                
-                
+                var window = new AdWindow(this);
+                window.Closed += AdWindowOnClosed;
+                window.Top = this.Top + (330 * i) + 70;
+                window.Left = this.Left + 240;
+                window.Show();
+                adWindow.Add(window);
             }
         }
 
         private void AdWindowOnClosed(object sender, EventArgs eventArgs)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                adWindow[i].Closed -= AdWindowOnClosed;
-                adWindow[i] = null;
-            }
-            
-            
+            var c = adWindow.FirstOrDefault(x => x == sender);
+            c.Dispose();
+            adWindow.Remove(c);
         }
 
 
@@ -68,6 +59,13 @@ namespace GameOfLife
             {
                 timer.Stop();
                 ButtonStart.Content = "Start";
+                if (adWindow.Any())
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        adWindow.FirstOrDefault().Close();
+                    }
+                }
             }
         }
 
@@ -83,6 +81,6 @@ namespace GameOfLife
             mainGrid.Clear();
         }
 
-        
+
     }
 }

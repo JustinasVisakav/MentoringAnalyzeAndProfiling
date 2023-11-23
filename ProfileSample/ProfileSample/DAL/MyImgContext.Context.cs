@@ -16,13 +16,13 @@ namespace ProfileSample.DAL
     public partial class ProfileSampleEntities : DbContext
     {
         public ProfileSampleEntities()
-            : base("name=ProfileSampleEntities")
+            : base("Server = EPLTVILW0053\\SQLEXPRESS; Database=ProfileSample;Trusted_Connection=True;")
         {
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            throw new UnintentionalCodeFirstException();
+            //throw new UnintentionalCodeFirstException();
         }
     
         public virtual DbSet<ImgSource> ImgSources { get; set; }
